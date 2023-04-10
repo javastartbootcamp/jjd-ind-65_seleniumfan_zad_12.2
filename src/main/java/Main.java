@@ -1,22 +1,25 @@
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
-
-        File file = new File("employees.csv");
-
+    public static void main(String[] args) {
+        String fileName = "employees.csv";
+        File file = new File(fileName);
         if (file.exists()) {
+            Employee[] employees = FileUtils.read(file);
             File stats = new File("stats.txt");
-            stats.createNewFile();
-
-//            FileWriter fileWriter = new FileWriter(stats);
-//            fileWriter.write("Średnia wypłata: 5000");
-//
-//            fileWriter.close();
+            String employeeStats = createStats(employees);
+            FileUtils.save(stats, employeeStats);
         }
+    }
 
+    private static String createStats(Employee[] employee) {
+        EmployeeUtils employeeUtils = new EmployeeUtils(employee);
+        return "Średnia wypłata: " + employeeUtils.averageSalary() +
+                "\nMinimalna wypłata: " + employeeUtils.minSalary() +
+                "\nMaksymalna wypłata: " + employeeUtils.maxSalary() +
+                "\nLiczba pracowników IT: " + employeeUtils.employeeCount(Department.IT) +
+                "\nLiczba pracowników Support: " + employeeUtils.employeeCount(Department.SUPPORT) +
+                "\nLiczba pracowników Management: " + employeeUtils.employeeCount(Department.MANAGEMENT);
     }
 }
